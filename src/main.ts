@@ -1,4 +1,5 @@
 import { harvest, transport } from "modules/actions";
+import { HarvesterFactory } from "modules/creeps/harvester";
 import { getAllCreeps } from "utils/creeps";
 import { ErrorMapper } from "utils/ErrorMapper";
 
@@ -34,8 +35,13 @@ declare global {
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
-  const spawn = Game.spawns['Spawn1'];
+  const harvesterFactory = new HarvesterFactory();
+  const spawn = Game.spawns["Brandon's test"];
+  const energy = spawn.store.energy;
   const creeps = getAllCreeps();
+  if (energy >= 200 && creeps.length < 6) {
+    harvesterFactory.createCreep({spawn});
+  }
   creeps.map((creep) => {
     if (creep.store.getFreeCapacity() > 0) {
       harvest(creep);
